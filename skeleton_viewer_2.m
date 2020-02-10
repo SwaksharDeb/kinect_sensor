@@ -1,4 +1,5 @@
 imaqreset;
+data = [];
 %create color and depth kinect videoinput objects
 colorVid = videoinput('kinect', 1);
 depthVid = videoinput('kinect', 2);
@@ -38,6 +39,10 @@ SkeletonConnectionMap = [ [4 3];  % Neck
 while ishandle(himg);
 trigger (depthVid);
 [depthMap, ts, depthMetaData] = getdata (depthVid);
+data1 = depthMetaData.JointPositions(:,:,1);
+data = [data;data1];
+%disp(depthMetaData.JointPositions(:,:,1))
+%disp('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
 anyBodiesTracked = any(depthMetaData.IsBodyTracked ~= 0);
 trackedBodies = find(depthMetaData.IsBodyTracked);
 nBodies = length(trackedBodies);
@@ -57,3 +62,9 @@ hold off;
 end
 end
 stop(depthVid);
+stop(colorVid);
+delete(depthVid);
+delete(colorVid);
+clear depthVid;
+clear colorVid;
+csvwrite('test.txt',data);
